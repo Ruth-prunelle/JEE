@@ -1,0 +1,128 @@
+
+entity Enregistrement {
+	numeroEnregistrement Instant  
+    dateEnregistrement LocalDate
+    Utilisateurs Utilisateurs
+    Administrateurs Administrateurs 
+    Depenses Depenses 
+}
+
+entity Devise {
+	typeDevise String
+    Depenses Depenses
+}
+
+// an ignored comment
+/** not an ignored comment */
+entity Location {
+	streetAddress String,
+	postalCode String,
+	city String,
+	stateProvince String
+    Utilisateurs Utilisateurs
+    
+}
+
+entity Conversion {
+	Depenses Depenses  
+}
+
+/**
+ * Task entity.
+ * @author The JHipster team.
+ */
+entity Administrateurs {
+	id  Instant
+	title String,
+	description String
+    Utilisateurs Utilisateurs
+}
+
+/**
+ * The Employee entity.
+ */
+entity Utilisateurs {
+	/**
+	* The firstname attribute.
+	*/
+	firstName String,
+	lastName String,
+	email String,
+	phoneNumber String,
+	hireDate Instant,
+	salary Long,
+    Depenses Depenses
+}
+
+entity Depenses {
+	typeDepenses String
+    Utilisateurs Utilisateurs
+}
+
+entity Authentification {
+	email String,
+	password String,
+	phone Long
+    Administrateurs Administrateurs
+    Utilisateurs Utilisateurs
+}
+
+enum Language {
+    FRENCH, ENGLISH, SPANISH
+}
+
+relationship OneToOne {
+	Utilisateurs{Utilisateurs} to Authentification
+}
+
+relationship OneToOne {
+	Administrateurs{Administrateurs} to Authentification
+    Administrateurs{Administrateurs} to Enregistrement
+    Utilisateurs{Utilisateurs} to Enregistrement
+}
+
+relationship OneToOne {
+	Conversion{Conversion} to Devise
+}
+
+relationship ManyToMany {
+	Job{task(title)} to Task{job}
+}
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+	Utilisateurs to Depenses{Utilisateurs},
+	/**
+	* A relationship
+	*/
+	Depenses  to
+	/**
+	* Another side of the same relationship
+	*/
+	Enregistrement{Enregistrement}
+}
+
+relationship OneToMany {
+	Utilisateurs{Utilisateurs} to Location
+    Devise{Devise} to Depenses
+}
+
+// defining multiple oneToOne relationships
+relationship OneToOne {
+	JobHistory{job} to Job,
+	JobHistory{department} to Department,
+	JobHistory{employee} to Employee
+}
+
+// Set pagination options
+paginate JobHistory, Employee with infinite-scroll
+paginate Job with pagination
+
+// Use Data Transfer Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl except Employee, Job
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
